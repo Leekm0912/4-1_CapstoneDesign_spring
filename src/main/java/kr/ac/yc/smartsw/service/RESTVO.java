@@ -6,6 +6,7 @@ public class RESTVO {
 	private String title;
 	private String text;
 	private String image;
+	private String csv;
 	
 	public RESTVO() {
 		
@@ -35,10 +36,16 @@ public class RESTVO {
 	public void setImage(String image) {
 		this.image = image;
 	}
+	public String getCsv() {
+		return csv;
+	}
+	public void setCsv(String csv) {
+		this.csv = csv;
+	}
 
 	@Override
 	public String toString() {
-		return "RESTVO [id=" + id + ", title=" + title + ", text=" + text + ", image=" + image + "]";
+		return "RESTVO [id=" + id + ", title=" + title + ", text=" + text + ", image=" + image + ", csv=" + csv + "]";
 	}
 	
 }

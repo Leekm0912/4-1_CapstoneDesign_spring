@@ -27,7 +27,7 @@ public class RESTService {
 	@Autowired
 	ServletContext servletContext;
 	
-	public void restGet(String url) throws IOException {
+	public RESTVO restGet(String url) throws IOException {
 		WebClient webClient = WebClient.create();
 		Mono<RESTVO> mono = webClient.get()
 				 .uri(url)
@@ -40,6 +40,8 @@ public class RESTService {
 		logger.debug(restVO.toString());
 		
 		imageDownload(restVO.getTitle(), restVO.getImage());
+		
+		return restVO;
 	}
 	
 	public void imageDownload(String title, String imgUrl) throws IOException {
