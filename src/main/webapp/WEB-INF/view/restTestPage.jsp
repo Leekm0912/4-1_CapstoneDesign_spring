@@ -34,9 +34,13 @@
 		});
 	
 		d3.csv("${csv_url}", function(err, rows){
+			rows = rows.map(row => {
+				row.time = row.time.substr(0, row.time.indexOf('U')-1)
+				return row;
+			});
+			
 			function unpack(rows, key) {
 				return rows.map(function(row) {
-			  			row.time = row.time.substr(0, row.time.indexOf('U')-1)
 			  			return row[key];
 					});
 			}
@@ -48,8 +52,25 @@
 				y: unpack(rows, 'data'),
 				line: {color: '#17BECF'}
 			}
+			
+			function unpack2(rows, key) {
+				return rows.filter(row => row['anomaly_boolean'] == "True").map(row => {
+						return row[key];
+					});
+			}
+			
+			// anomaly data
+			var trace2 = {
+				x: unpack2(rows, 'time'),
+				y: unpack2(rows, 'data'),
+				mode: 'markers',
+				marker: {
+				    color: 'rgb(219, 64, 82)',
+				    size: 12
+				}
+			}
 
-			var data = [trace1];
+			var data = [trace1, trace2];
 	
 			var layout = {
 				title: 'Motor Vibration Time Series',
