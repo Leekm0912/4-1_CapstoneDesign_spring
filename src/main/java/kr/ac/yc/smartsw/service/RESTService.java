@@ -39,7 +39,7 @@ public class RESTService {
 		
 		logger.debug(restVO.toString());
 		
-		imageDownload(restVO.getTitle(), restVO.getImage());
+		// imageDownload(restVO.getTitle(), restVO.getImage());
 		
 		return restVO;
 	}
