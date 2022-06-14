@@ -29,6 +29,7 @@ public class RESTCallController {
 		try {
 			RESTVO restVO = restService.restGet(url + id.orElse(1L) + "/");
 			model.addAttribute("csv_url", restVO.getCsv());
+			logger.error("요청받음!");
 			return "restTestPage";
 		} catch (IOException e) {
 			logger.debug("rest failed");
