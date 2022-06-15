@@ -22,12 +22,12 @@ public class RESTCallController {
 	@Autowired
 	RESTService restService;
 	
-	@GetMapping({"/rest/{id}", "/rest"})
-	public String test(Model model, @PathVariable Optional<Long> id) {
+	@GetMapping({"/rest/{title}", "/rest"})
+	public String test(Model model, @PathVariable Optional<String> title) {
 		String url = "http://localhost:8000/test/";
 		
 		try {
-			RESTVO restVO = restService.restGet(url + id.orElse(1L) + "/");
+			RESTVO restVO = restService.restGet(url + title.orElse("v0") + "/");
 			model.addAttribute("csv_url", restVO.getCsv());
 			logger.error("요청받음!");
 			return "restTestPage";

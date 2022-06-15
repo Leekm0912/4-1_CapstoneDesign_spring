@@ -37,17 +37,24 @@
 		style="position: absolute; left: 500px; right: 0px; display: inline-block"
 		id="myDiv"></div>
 	 -->
-	 <div id="myDiv"></div>
+	<div id="myDiv"></div>
 	<Script>
+	/* CsvToHtmlTable.init({
+		csv_path: '${csv_url}', 
+	    element: 'table-container', 
+	    allow_download: true,
+	    csv_options: {separator: ',', delimiter: '"'},
+	    datatables_options: {"paging": false}
+	}); */
+
+	var n = 0;
 	var count = 0;
-	
-	function draw(sign){
-		d3.csv("${csv_url}", function(err, rows){
+	function draw(){
+		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
 			rows = rows.map(row => {
 				row.time = row.time.substr(0, row.time.indexOf('U')-1)
 				return row;
 			});
-			console.log(rows);
 			
 			function unpack(rows, key) {
 				return rows.map(function(row) {
@@ -65,7 +72,6 @@
 			
 			function unpack2(rows, key) {
 				return rows.filter(row => row['anomaly_boolean'] == "TRUE").map(row => {
-						
 						return row[key];
 					});
 			}
@@ -80,7 +86,7 @@
 				    size: 12
 				}
 			}
-
+			
 			var data = [trace1, trace2];
 	
 			var layout = {
@@ -89,45 +95,63 @@
 					tickformat: '%H:%M:%S' // For more time formatting types, see: https://github.com/d3/d3-time-format/blob/master/README.md
 				}
 			};
-			if(sign == 1){
-				console.log("1234");
-				count = unpack2(rows, 'time').length;
-				console.log("길이 : "+count);
-				Plotly.newPlot('myDiv', data, layout);
-			}else{
-				let div = document.getElementById("myDiv");
-				console.log(div);
-				div.remove();
-				console.log("asdf");
-				let newDiv = document.createElement("div");
-				newDiv.setAttribute("id", "myDiv");
-				document.body.appendChild(newDiv);
-				let temp = unpack2(rows, 'time').length;
-				if(count != temp){
-					alert("다름! => " + temp);
-					count = temp;
-				}
-				console.log("길이 : "+count);
-				
-				Plotly.newPlot('myDiv', data, layout);
-			}
+			
+			n = rows.length;
+			console.log("길이 : " + n);
+			count = unpack2(rows, 'time').length;
+			console.log("이상치 개수 : " + count);
+			Plotly.newPlot('myDiv', data, layout);
 		})
 	}
-		/* CsvToHtmlTable.init({
-	    	csv_path: '${csv_url}', 
-		    element: 'table-container', 
-		    allow_download: true,
-		    csv_options: {separator: ',', delimiter: '"'},
-		    datatables_options: {"paging": false}
-		}); */
-		draw(1);
-		
-		let timerId = setInterval(() => {
-			fetch('http://localhost:8000/test/1').then((response)=>
-				console.log(response)
-			);
-			draw(0);		
-		}, 2000);
+	
+	draw();
+
+	// https://plotly.com/javascript/streaming/
+	var interval = setInterval(function() {
+
+		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
+			rows = rows.slice(n);
+			
+			rows = rows.map(row => {
+				row.time = row.time.substr(0, row.time.indexOf('U')-1)
+				return row;
+			});
+			
+			function unpack(rows, key) {
+				return rows.map(function(row) {
+			  			return row[key];
+					});
+			}
+
+			var trace1 = {
+				x: [unpack(rows, 'time')],
+				y: [unpack(rows, 'data')],
+			}
+			
+			function unpack2(rows, key) {
+				return rows.filter(row => row['anomaly_boolean'] == "TRUE").map(row => {
+						return row[key];
+					});
+			}
+			
+			// anomaly data
+			var trace2 = {
+				x: [unpack2(rows, 'time')],
+				y: [unpack2(rows, 'data')],
+			}
+			
+			n += rows.length;
+			console.log("길이 : " + n);
+			count += unpack2(rows, 'time').length;
+			console.log("이상치 개수 : " + count);
+			
+			if (rows.length != 0) {
+				Plotly.extendTraces('myDiv', trace1, [0]);
+				Plotly.extendTraces('myDiv', trace2, [1]);
+			}
+		});
+	
+	}, 2000);
 		
 		
 		
