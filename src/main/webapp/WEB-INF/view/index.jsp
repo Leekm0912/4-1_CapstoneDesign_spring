@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>tlftlrks</title>
+    <title>실시간</title>
 
     <!-- Custom fonts for this template-->
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/vendor/fontawesome-free/css/all.min.css">
@@ -388,12 +388,12 @@
                                     </div>
                                 </div>
                                 <!-- Card Body -->
-                                <div class="card-body">
+                                <div class="card-body" style=" height: 520px;">
                                     <div class="chart-pie pt-4 pb-2">
                                         
                                         <div class="text-center">
-                                        <img class="img-fluid px-5 px-sm-4 mt-3 mb-4" style="width: 80%; height: 250px;"
-                                            src="/resources/img/chart2.png" alt="...">
+                                        <iframe class="img-fluid px-5 px-sm-4 mt-3 mb-4" style="width: 80%; height: 450px;"
+                                        	src="/rest"></iframe>
                                     </div>
                                     </div>
                                     
