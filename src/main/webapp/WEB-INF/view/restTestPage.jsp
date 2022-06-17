@@ -144,6 +144,9 @@
 			console.log("길이 : " + n);
 			count += unpack2(rows, 'time').length;
 			console.log("이상치 개수 : " + count);
+			if(unpack2(rows, 'time').length > 0){
+				alert("이상치 발견");
+			}
 			
 			if (rows.length != 0) {
 				Plotly.extendTraces('myDiv', trace1, [0]);
@@ -151,7 +154,7 @@
 			}
 		});
 	
-	}, 2000);
+	}, 500);
 		
 		
 		

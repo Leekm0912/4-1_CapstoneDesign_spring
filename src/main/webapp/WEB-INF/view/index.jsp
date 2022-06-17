@@ -411,7 +411,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-1">
                                             <div style="font: bold 1.7em/1.0em;" font size = "10" href="#" role="button">
-                                                <h5 class="text-center">시작</h5>
+                                                <h5 class="text-center" onclick="sendMsg('start')">시작</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -426,7 +426,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-1">
                                             <div style="font: bold 1.7em/1.0em;" font size = "15" text-align = "center" href="#" role="button">
-                                                <h5 class="text-center">정지</h5>
+                                                <h5 class="text-center" onclick="sendMsg('stop')">정지</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-1">
                                             <div style="font: bold 1.7em/1.0em;" font size = "15" text-align = "center" href="#" role="button">
-                                                <h5 class="text-center">+</h5>
+                                                <h5 class="text-center" onclick="sendMsg('speedUp')">+</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -456,7 +456,21 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-1">
                                             <div style="font: bold 1.7em/1.0em;" href="#" role="button">
-                                             	<h5 class="text-center">-</h5>
+                                             	<h5 class="text-center" onclick="sendMsg('speedDown')">-</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xl-2 col-md-2 mb-2-auto">
+                            <div class="card bg-success  text-white  shadow h-200 py-1 ">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-1">
+                                            <div style="font: bold 1.7em/1.0em;" href="#" role="button">
+                                             	<h5 class="text-center" onclick="sendMsg('test')">Test</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -471,12 +485,12 @@
                     <hr>
                     
                     <div style='padding: 10px;'>
-                  	</div>s
+                  	</div>
                     
                      <!-- Content Row -->
                     <div class="row">
-
                         <!-- Earnings (Monthly) Card Example -->
+                        <!-- 
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
@@ -493,10 +507,11 @@
                                 </div>
                             </div>
                         </div>
-
+						 -->
                       
 
                         <!-- Earnings (Monthly) Card Example -->
+                        <!-- 
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-info shadow h-100 py-2">
                                 <div class="card-body">
@@ -521,7 +536,7 @@
                                 </div>
                             </div>
                         </div>
-
+						 -->
 
 						
                        
@@ -659,7 +674,17 @@
             </div>
         </div>
     </div>
-
+	
+	<script>
+		var serverip = "localhost";
+		
+	
+		function sendMsg(msg){
+			fetch("/socket/"+serverip+"/"+msg)
+			.then((resp)=>console.log(resp));
+		}	
+	</script>
+	
     <!-- Bootstrap core JavaScript-->
     <script src="<c:url value="/resources/vendor/jquery/jquery.min.js" />">
     
