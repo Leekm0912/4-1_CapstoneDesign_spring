@@ -405,7 +405,8 @@
                     <div class="row">
                     	 
                     	  <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-2 col-md-2 mb-2 offset-md-2" id = "ex1">
+                    	  <!-- offset-md-1 부분을 바꾸면 정렬 -->
+                        <div class="col-xl-2 col-md-2 mb-2 offset-md-1" id = "ex1">
                             <div class="card bg-danger text-white shadow h-200 py-1">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -676,7 +677,8 @@
     </div>
 	
 	<script>
-		var serverip = "localhost";
+		//var serverip = "localhost";
+		var serverip = "192.168.0.4";
 		
 	
 		function sendMsg(msg){

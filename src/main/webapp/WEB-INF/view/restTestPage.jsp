@@ -51,8 +51,11 @@
 	var count = 0;
 	function draw(){
 		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
+			// rows = rows.slice(2063)
 			rows = rows.map(row => {
-				row.time = row.time.substr(0, row.time.indexOf('U')-1)
+				s = row.time.split("T")
+				s = s[0] + " " + s[1].slice(0, s[1].length-1)
+				// row.time = row.time.substr(0, row.time.indexOf('U')-1)
 				return row;
 			});
 			
@@ -66,12 +69,13 @@
 				type: "scatter",
 				mode: "lines",
 				x: unpack(rows, 'time'),
-				y: unpack(rows, 'data'),
+				y: unpack(rows, 'value'),
 				line: {color: '#17BECF'}
 			}
 			
+			console.log(rows)
 			function unpack2(rows, key) {
-				return rows.filter(row => row['anomaly_boolean'] == "TRUE").map(row => {
+				return rows.filter(row => row['is_anomaly'] == "True").map(row => {
 						return row[key];
 					});
 			}
@@ -79,7 +83,7 @@
 			// anomaly data
 			var trace2 = {
 				x: unpack2(rows, 'time'),
-				y: unpack2(rows, 'data'),
+				y: unpack2(rows, 'value'),
 				mode: 'markers',
 				marker: {
 				    color: 'rgb(219, 64, 82)',
@@ -111,9 +115,12 @@
 
 		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
 			rows = rows.slice(n);
+			// rows = rows.slice(2063+n);
 			
 			rows = rows.map(row => {
-				row.time = row.time.substr(0, row.time.indexOf('U')-1)
+				s = row.time.split("T")
+				s = s[0] + " " + s[1].slice(0, s[1].length-1)
+				// row.time = row.time.substr(0, row.time.indexOf('U')-1)
 				return row;
 			});
 			
@@ -125,11 +132,11 @@
 
 			var trace1 = {
 				x: [unpack(rows, 'time')],
-				y: [unpack(rows, 'data')],
+				y: [unpack(rows, 'value')],
 			}
 			
 			function unpack2(rows, key) {
-				return rows.filter(row => row['anomaly_boolean'] == "TRUE").map(row => {
+				return rows.filter(row => row['is_anomaly'] == "True").map(row => {
 						return row[key];
 					});
 			}
@@ -137,7 +144,7 @@
 			// anomaly data
 			var trace2 = {
 				x: [unpack2(rows, 'time')],
-				y: [unpack2(rows, 'data')],
+				y: [unpack2(rows, 'value')],
 			}
 			
 			n += rows.length;
@@ -145,7 +152,7 @@
 			count += unpack2(rows, 'time').length;
 			console.log("이상치 개수 : " + count);
 			if(unpack2(rows, 'time').length > 0){
-				alert("이상치 발견");
+				// alert("이상치 발견");
 			}
 			
 			if (rows.length != 0) {
