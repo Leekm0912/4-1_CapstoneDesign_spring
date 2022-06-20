@@ -37,7 +37,8 @@
 		style="position: absolute; left: 500px; right: 0px; display: inline-block"
 		id="myDiv"></div>
 	 -->
-	<div id="myDiv"></div>
+	<div id="myDiv" style="width:49%; float:left"></div>
+	<div id="myDiv2" style="width:49%; float:right"></div>
 	<Script>
 	/* CsvToHtmlTable.init({
 		csv_path: '${csv_url}', 
@@ -47,11 +48,13 @@
 	    datatables_options: {"paging": false}
 	}); */
 
+	var base_data_length = 1780;
 	var n = 0;
 	var count = 0;
 	function draw(){
 		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
-			// rows = rows.slice(2063)
+			rows = rows.slice(base_data_length)
+			
 			rows = rows.map(row => {
 				s = row.time.split("T")
 				s = s[0] + " " + s[1].slice(0, s[1].length-1)
@@ -68,6 +71,7 @@
 			var trace1 = {
 				type: "scatter",
 				mode: "lines",
+				name: 'value',
 				x: unpack(rows, 'time'),
 				y: unpack(rows, 'value'),
 				line: {color: '#17BECF'}
@@ -80,10 +84,31 @@
 					});
 			}
 			
+			var trace3 = {
+				type: "scatter",
+				mode: "lines",
+				name: 'ema',
+				x: unpack(rows, 'time'),
+				y: unpack(rows, 'ema'),
+				line: {color: '#FF0000'}
+			}
+			
 			// anomaly data
 			var trace2 = {
 				x: unpack2(rows, 'time'),
 				y: unpack2(rows, 'value'),
+				mode: 'markers',
+				name: 'anomaly',
+				marker: {
+				    color: 'rgb(219, 64, 82)',
+				    size: 12
+				}
+			}
+			
+			var trace4 = {
+				x: unpack2(rows, 'time'),
+				y: unpack2(rows, 'ema'),
+				name: 'anomaly',
 				mode: 'markers',
 				marker: {
 				    color: 'rgb(219, 64, 82)',
@@ -91,10 +116,19 @@
 				}
 			}
 			
+			// var data = [trace1, trace2, trace3, trace4];
 			var data = [trace1, trace2];
+			var data2 = [trace3, trace4];
 	
 			var layout = {
 				title: 'Motor Vibration Time Series',
+				xaxis: {
+					tickformat: '%H:%M:%S' // For more time formatting types, see: https://github.com/d3/d3-time-format/blob/master/README.md
+				}
+			};
+			
+			var layout2 = {
+				title: 'Motor Vibration Time Series(EMA)',
 				xaxis: {
 					tickformat: '%H:%M:%S' // For more time formatting types, see: https://github.com/d3/d3-time-format/blob/master/README.md
 				}
@@ -105,6 +139,7 @@
 			count = unpack2(rows, 'time').length;
 			console.log("이상치 개수 : " + count);
 			Plotly.newPlot('myDiv', data, layout);
+			Plotly.newPlot('myDiv2', data2, layout2);
 		})
 	}
 	
@@ -114,8 +149,8 @@
 	var interval = setInterval(function() {
 
 		d3.csv("${csv_url}?=" + Date.now(), function(err, rows){
-			rows = rows.slice(n);
-			// rows = rows.slice(2063+n);
+			// rows = rows.slice(n);
+			rows = rows.slice(base_data_length+n);
 			
 			rows = rows.map(row => {
 				s = row.time.split("T")
@@ -135,6 +170,11 @@
 				y: [unpack(rows, 'value')],
 			}
 			
+			var trace3 = {
+				x: [unpack(rows, 'time')],
+				y: [unpack(rows, 'ema')],
+			}
+			
 			function unpack2(rows, key) {
 				return rows.filter(row => row['is_anomaly'] == "True").map(row => {
 						return row[key];
@@ -145,6 +185,10 @@
 			var trace2 = {
 				x: [unpack2(rows, 'time')],
 				y: [unpack2(rows, 'value')],
+			}
+			var trace4 = {
+				x: [unpack2(rows, 'time')],
+				y: [unpack2(rows, 'ema')],
 			}
 			
 			n += rows.length;
@@ -157,7 +201,9 @@
 			
 			if (rows.length != 0) {
 				Plotly.extendTraces('myDiv', trace1, [0]);
+				Plotly.extendTraces('myDiv2', trace3, [0]);
 				Plotly.extendTraces('myDiv', trace2, [1]);
+				Plotly.extendTraces('myDiv2', trace4, [1]);
 			}
 		});
 	
