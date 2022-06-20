@@ -679,7 +679,6 @@
 	<script>
 		//var serverip = "localhost";
 		var serverip = "192.168.0.4";
-		
 	
 		function sendMsg(msg){
 			fetch("/socket/"+serverip+"/"+msg)
